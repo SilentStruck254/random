@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>👀</title>
+<!-- simple, human fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Kalam:wght@300;400;700&family=Short+Stack&display=swap" rel="stylesheet">
+<style>
+  /* ------------------------------------------------
+     reset — nothing too polished, feels more personal
+  ------------------------------------------------ */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #faf4ed;
+    /* subtle warm gradient that feels like paper under lamplight */
+    background-image: radial-gradient(circle at 10% 20%, rgba(245, 225, 210, 0.4) 2%, transparent 2.5%),
+                      radial-gradient(circle at 85% 40%, rgba(230, 200, 175, 0.3) 1.5%, transparent 2%);
+    background-size: 48px 48px, 32px 32px;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    padding: 2rem 1rem 3rem;
+    color: #2c221b;
+    line-height: 1.5;
+  }
+
+  /* main container — feels like an actual letter on a desk */
+  .paper {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #fffef7;
+    border-radius: 2px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 240, 0.8);
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  /* a bit of "messy" edge — slightly uneven look */
+  .paper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: repeating-linear-gradient(transparent, transparent 29px, rgba(210, 180, 140, 0.08) 30px);
+  }
+
+  /* inner padding = feels like writing space */
+  .letter-inner {
+    padding: 2.5rem 2rem 2.2rem;
+    position: relative;
+  }
+
+  /* hand-written style headers */
+  .handwriting {
+    font-family: 'Kalam', 'Short Stack', cursive;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+  }
+
+  .header-note {
+    text-align: center;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px dashed #e7d9ce;
+    padding-bottom: 0.75rem;
+  }
+
+  .header-note h1 {
+    font-family: 'Kalam', cursive;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: #b1624b;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #b1624b 0%, #c97b62 80%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    display: inline-block;
+  }
+
+  .subhead {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #c6aa8f;
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* language toggle — simple and a bit raw */
+  .lang-choice {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #f0e2d6;
+    padding-bottom: 0.8rem;
+  }
+
+  .lang-btn {
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    font-family: 'Inter', monospace;
+    padding: 0.2rem 0.7rem;
+    cursor: pointer;
+    color: #ac8e72;
+    font-weight: 450;
+    transition: all 0.15s;
+    border-radius: 20px;
+  }
+
+  .lang-btn.active {
+    background: #f0e0d0;
+    color: #8b5a42;
+    box-shadow: inset 0 0 0 1px #e5cfbf;
+  }
+
+  .lang-btn:hover {
+    color: #7b4a32;
+    background: #f7ede5;
+  }
+
+  /* letter body — typewriter-ish but not robotic */
+  .message-body {
+    margin: 1.2rem 0 1.6rem;
+    min-height: 280px;
+  }
+
+  /* each line of the note */
+  .note-line {
+    font-family: 'Short Stack', 'Kalam', 'Courier New', monospace;
+    font-size: 1.08rem;
+    line-height: 1.8;
+    margin-bottom: 0.1rem;
+    transition: all 0.2s ease;
+    display: inline-block;
+    width: 100%;
+    color: #3e2c21;
+    padding: 0.2rem 0.3rem;
+    border-radius: 12px;
+  }
+
+  /* highlighted line (current spoken line) */
+  .note-line.current {
+    background-color: #fff0e4;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    border-left: 4px solid #e5a07a;
+    padding-left: 0.9rem;
+    margin-left: -0.3rem;
+    transition: 0.08s linear;
+  }
+
+  .note-line.past {
+    opacity: 0.65;
+    filter: blur(0.2px);
+  }
+
+  .note-line-sub {
+    font-size: 0.92rem;
+    color: #af8a6e;
+    font-family: 'Inter', monospace;
+    letter-spacing: -0.2px;
+    font-style: normal;
+    padding-left: 0.8rem;
+  }
+
+  .spacer-sm {
+    height: 0.65rem;
+  }
+
+  .signature {
+    font-family: 'Kalam', cursive;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    color: #bc7a5a;
+    text-align: right;
+    border-top: 1px dashed #f0e0d2;
+    padding-top: 1rem;
+  }
+
+  /* typewriter cursor effect */
+  .cursor-blinky {
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background-color: #c68b64;
+    margin-left: 3px;
+    vertical-align: middle;
+    animation: fadePulse 0.9s step-end infinite;
+    border-radius: 1px;
+  }
+
+  @keyframes fadePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* play button — feels like a real push button, not overstyled */
+  .play-section {
+    display: flex;
+    justify-content: center;
+    margin: 1.8rem 0 0.5rem;
+  }
+
+  .play-note-btn {
+    background: #fcf6f0;
+    border: 1.5px solid #e2cfbe;
+    padding: 0.7rem 2rem;
+    font-family: 'Inter', system-ui;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #8c5e44;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: 0.1s linear;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .play-note-btn:hover {
+    background: #ffece0;
+    border-color: #dbba9c;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .play-note-btn:active {
+    transform: translateY(1px);
+  }
+
+  /* progress indicator — super subtle, like a pencil underline */
+  .progress-area {
+    margin-top: 0.8rem;
+    padding: 0 0.2rem;
+  }
+
+  .progress-track {
+    height: 2px;
+    background: #ecdccf;
+    width: 100%;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #c28662;
+    transition: width 0.2s linear;
+  }
+
+  /* tiny footer */
+  .tiny-footer {
+    text-align: center;
+    font-size: 0.68rem;
+    color: #cfbba8;
+    margin-top: 2rem;
+    letter-spacing: 0.7px;
+  }
+
+  /* floating petals — very subtle, not distracting */
+  .petal-fall {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* sparkle container for finale */
+  .sparkle-burst {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  /* handmade feel — slight ink bleed effect on text selection */
+  ::selection {
+    background: #f7ddcc;
+    color: #5c3a2a;
+  }
+
+  @media (max-width: 500px) {
+    .letter-inner {
+      padding: 1.5rem;
+    }
+    .note-line {
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+  }
+  
+  /* hidden audio player container - no visible UI */
+  .hidden-audio {
+    display: none !important;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="paper">
+  <div class="letter-inner">
+    <div class="header-note">
+      <h1 class="handwriting">To whom it may concern</h1>
+      <div class="subhead">[I hope u r alive bytha👀]</div>
+    </div>
+
+    <!-- language toggle: two simple buttons, no fancy pill -->
+    <div class="lang-choice">
+      <button class="lang-btn" id="langEnBtn" data-lang="en">english</button>
+      <span style="color:#dccbbc">|</span>
+      <button class="lang-btn" id="langJpBtn" data-lang="jp">日本語</button>
+    </div>
+
+    <!-- dynamic message area -->
+    <div class="message-body" id="messageContainer"></div>
+
+    <div class="play-section">
+      <button class="play-note-btn" id="playMessageBtn">
+        <span>🎧</span> <span id="playBtnText">listen to note</span>
+      </button>
+    </div>
+
+    <div class="progress-area">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="signature">
+    😼 🌿
+    </div>
+  </div>
+</div>
+<div class="tiny-footer">
+  ujichunge bytha😤
+</div>
+
+<!-- canvas elements for gentle falling petals + final sparkles (subtle, not ai-clean) -->
+<canvas id="petalCanvas" class="petal-fall"></canvas>
+<canvas id="sparkleCanvas" class="sparkle-burst" style="display: none;"></canvas>
+
+<!-- HIDDEN AUDIO PLAYER - place your background music here. No visible controls. -->
+<!-- ============================================================= -->
+<!-- ==== 👇👇👇 PUT YOUR AUDIO TAG RIGHT HERE 👇👇👇 ==== -->
+<!-- ==== It will be completely invisible to users but will autoplay when the page loads ==== -->
+<audio id="bgMusic" loop preload="auto" style="display:none; position:absolute; visibility:hidden; width:0; height:0; opacity:0;">
+    <source src="audioForSite.mp3" type="audio/mpeg">
+    
+</audio>
+<!-- ============================================================= -->
+
+<script>
+  // --------------------------------------------------------------
+  // HIDDEN BACKGROUND MUSIC HANDLER
+  // --------------------------------------------------------------
+  const bgAudio = document.getElementById('bgMusic');
+  let audioPlayAttempted = false;
+  
+  // Function to try playing background audio (respects browser autoplay policies)
+  function playBackgroundAudio() {
+    if (!bgAudio) return;
+    // If audio has no src, don't do anything
+    const hasSource = bgAudio.src && bgAudio.src !== window.location.href && bgAudio.src !== "";
+    const hasSourceChild = bgAudio.querySelector('source') && bgAudio.querySelector('source').src && bgAudio.querySelector('source').src !== "";
+    if (!hasSource && !hasSourceChild) {
+      console.log("No audio source provided — background music disabled");
+      return;
+    }
+    bgAudio.volume = 0.35; // gentle background volume
+    bgAudio.play().then(() => {
+      audioPlayAttempted = true;
+    }).catch(e => {
+      console.log("Autoplay blocked — will play on user interaction");
+      // Will retry on first click anywhere
+    });
+  }
+  
+  // Attempt to play on page load (may be blocked)
+  window.addEventListener('load', () => {
+    setTimeout(playBackgroundAudio, 500);
+  });
+  
+  // Also attempt on first user click (any click on document) - ensures music plays
+  const playAudioOnInteraction = () => {
+    if (!audioPlayAttempted && bgAudio) {
+      bgAudio.play().catch(e => console.log("still blocked?"));
+    }
+  };
+  document.body.addEventListener('click', playAudioOnInteraction);
+  document.body.addEventListener('touchstart', playAudioOnInteraction);
+  
+  // --------------------------------------------------------------
+  // CONTENT — feels real, a bit raw, has personality and voice
+  // --------------------------------------------------------------
+  const letterContent = {
+    en: [
+      { text: "Hey you.", style: "regular" },
+      { text: "I know today probably hasn't been the greatest", style: "regular" },
+      { text: "I just hope you is okay", style: "regular" },
+      { text: "(and it's okay if you arent too)..", style: "sub" },
+      { spacer: true },
+      { text: "Some days are just rough, and that's alright..", style: "regular" },
+      { spacer: true },
+      { text: "So go easy on yourself gurll. Rest. Be annoyed at the world for a bit [and call me to beat people up once in a while].", style: "regular" },
+      { spacer: true },
+      { text: "Until then, just take care of yourself, okay?(huna option, it be a must)", style: "regular" },
+      { spacer: true },
+      { text: "And... for what it's worth,", style: "regular" },
+      { text: "I'm in your corner..", style: "regular" },
+      { spacer: true },
+      { text: "You go gurlll 💗", style: "signature" },
+      { text:"[clock it clock it]", style: "signature"}
+    ],
+    jp: [
+      { text: "ねえ、そっちの人。", style: "regular" },
+      { text: "今日はちょっとしんどかったかもしれないね。", style: "regular" },
+      { text: "うまくいかない日もあるよな、それでいいんだ。", style: "regular" },
+      { text: "(無理に元気にならなくて大丈夫だよ)", style: "sub" },
+      { spacer: true },
+      { text: "でも伝えたかったこと：自分が思うより、ちゃんと頑張ってるよ。", style: "regular" },
+      { text: "それが今は見えなくてもね。", style: "regular" },
+      { spacer: true },
+      { text: "ちょっと休んで。水を飲んで。世界にイライラしたっていい。", style: "regular" },
+      { text: "誰かと一緒に愚痴りたい時は、いつでも連絡してね。", style: "sub" },
+      { spacer: true },
+      { text: "自分を追い込みすぎないでね。", style: "regular" },
+      { text: "(これは選択肢じゃないから。マストね。)", style: "sub" },
+      { spacer: true },
+      { text: "それと、私はずっとあなたの味方だよ。", style: "regular" },
+      { text: "このめちゃくちゃな世界でも、一人じゃないからね。", style: "regular" },
+      { spacer: true },
+      { text: "進もう、ガール 💗", style: "signature" }
+    ]
+  };
+
+  // state
+  let currentLang = 'en';
+  let currentLineIdx = -1;
+  let isPlaying = false;
+  let playTimeout = null;
+  let lineElementsArray = [];     // html divs for each line (with spacer handling)
+  let actualTextLines = [];       // stores { element, text, style }
+  let lineDurations = [];
+  let currentTimerStart = 0;
+  let remainingTimeForCurrentLine = 0;
+  let pausedDuringLangSwitch = false;
+
+  // total reading time exactly 27 seconds for the entire message (both languages)
+  const TOTAL_READ_MS = 27000;
+
+  // compute delays based on character count - ensures consistent total time 27s per language
+  function computeLineDelays(linesData) {
+    if (!linesData || linesData.length === 0) return [];
+    const minTime = 500; // minimum ms per line for readability
+    let charWeights = linesData.map(line => Math.max(line.text.length, 4));
+    let totalChars = charWeights.reduce((a,b) => a+b, 0);
+    // total time budget in ms: TOTAL_READ_MS
+    let remainingMs = TOTAL_READ_MS - (minTime * linesData.length);
+    if (remainingMs < 0) remainingMs = 0;
+    let delays = charWeights.map(w => {
+      let share = (w / totalChars) * remainingMs;
+      return minTime + share;
+    });
+    return delays;
+  }
+
+  // render letter based on currentLang, rebuild lines
+  function renderLetter() {
+    const container = document.getElementById('messageContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    lineElementsArray = [];
+    actualTextLines = [];
+
+    const contentArr = letterContent[currentLang];
+    contentArr.forEach(item => {
+      if (item.spacer) {
+        const spacerDiv = document.createElement('div');
+        spacerDiv.className = 'spacer-sm';
+        container.appendChild(spacerDiv);
+        lineElementsArray.push(null);
+        actualTextLines.push(null);
+        return;
+      }
+      const lineDiv = document.createElement('div');
+      lineDiv.className = `note-line ${item.style === 'sub' ? 'note-line-sub' : ''} ${item.style === 'signature' ? 'signature' : ''}`;
+      if (item.style === 'signature') {
+        lineDiv.classList.add('handwriting');
+        lineDiv.style.fontFamily = "'Kalam', cursive";
+        lineDiv.style.fontSize = '1.25rem';
+        lineDiv.style.textAlign = 'right';
+      }
+      lineDiv.textContent = item.text;
+      container.appendChild(lineDiv);
+      lineElementsArray.push(lineDiv);
+      actualTextLines.push({ element: lineDiv, text: item.text, style: item.style });
+    });
+
+    // if we were playing before language switch, preserve progress timing? 
+    // according to requirement: "if i switch to japanese version mid message the rate of line change should be the same"
+    // But better to reset timeline completely or keep same progress? Let's reset playing state on language switch to avoid timing conflict,
+    // because content lengths differ. However requirement: rate of line change should be same (total 27s each). 
+    // We'll reset playback on language switch to avoid weird state, but total duration remains 27s for both.
+    if (isPlaying) {
+      // stop current playback cleanly
+      if (playTimeout) clearTimeout(playTimeout);
+      isPlaying = false;
+      currentLineIdx = -1;
+      updateHighlightAndProgress();
+      const btnSpan = document.getElementById('playBtnText');
+      if (btnSpan) btnSpan.innerText = 'listen to note';
+    } else {
+      // just reset highlight
+      clearHighlightAndProgress();
+      currentLineIdx = -1;
+      updateHighlightAndProgress();
+    }
+  }
+
+  function clearHighlightAndProgress() {
+    if (lineElementsArray) {
+      lineElementsArray.forEach(el => {
+        if (el) {
+          el.classList.remove('current', 'past');
+          const existingCursor = el.querySelector('.cursor-blinky');
+          if (existingCursor) existingCursor.remove();
+        }
+      });
+    }
+    const progFill = document.getElementById('progressFill');
+    if (progFill) progFill.style.width = '0%';
+  }
+
+  function updateHighlightAndProgress() {
+    // remove all current/past + cursors
+    for (let i = 0; i < lineElementsArray.length; i++) {
+      const el = lineElementsArray[i];
+      if (!el) continue;
+      el.classList.remove('current', 'past');
+      const curs = el.querySelector('.cursor-blinky');
+      if (curs) curs.remove();
+    }
+    // mark past lines (index < currentLineIdx)
+    for (let i = 0; i < currentLineIdx; i++) {
+      if (lineElementsArray[i]) lineElementsArray[i].classList.add('past');
+    }
+    // mark current line
+    if (currentLineIdx >= 0 && currentLineIdx < lineElementsArray.length && lineElementsArray[currentLineIdx]) {
+      const curr = lineElementsArray[currentLineIdx];
+      curr.classList.add('current');
+      const cursorSpan = document.createElement('span');
+      cursorSpan.className = 'cursor-blinky';
+      curr.appendChild(cursorSpan);
+      curr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // update progress bar based on total text lines (excluding spacers)
+    const totalLines = actualTextLines.filter(l => l !== null).length;
+    if (totalLines > 0 && currentLineIdx >= 0 && currentLineIdx < actualTextLines.length) {
+      let linesCompleted = actualTextLines.slice(0, currentLineIdx + 1).filter(l => l !== null).length;
+      let percent = Math.min(100, (linesCompleted / totalLines) * 100);
+      document.getElementById('progressFill').style.width = percent + '%';
+    } else if (currentLineIdx === -1) {
+      document.getElementById('progressFill').style.width = '0%';
+    } else if (currentLineIdx >= actualTextLines.length - 1) {
+      document.getElementById('progressFill').style.width = '100%';
+    }
+  }
+
+  function stopPlayback(resetButton = true) {
+    if (playTimeout) {
+      clearTimeout(playTimeout);
+      playTimeout = null;
+    }
+    isPlaying = false;
+    if (resetButton) {
+      const btnSpan = document.getElementById('playBtnText');
+      if (btnSpan) btnSpan.innerText = 'listen to note';
+    }
+  }
+
+  function playNextLine() {
+    if (!isPlaying) return;
+    const totalTextLines = actualTextLines.filter(l => l !== null).length;
+    let currentTextIndex = actualTextLines.slice(0, currentLineIdx + 1).filter(l => l !== null).length - 1;
+    if (currentTextIndex + 1 >= totalTextLines) {
+      finishReading();
+      return;
+    }
+    currentLineIdx++;
+    // find next actual line (skip null spacers)
+    while (currentLineIdx < actualTextLines.length && actualTextLines[currentLineIdx] === null) {
+      currentLineIdx++;
+    }
+    if (currentLineIdx >= actualTextLines.length || actualTextLines[currentLineIdx] === null) {
+      finishReading();
+      return;
+    }
+    updateHighlightAndProgress();
+    
+    // get current text index in filtered array
+    let newTextIndex = actualTextLines.slice(0, currentLineIdx + 1).filter(l => l !== null).length - 1;
+    if (newTextIndex < lineDurations.length) {
+      playTimeout = setTimeout(() => {
+        playNextLine();
+      }, lineDurations[newTextIndex]);
+    } else {
+      playTimeout = setTimeout(() => playNextLine(), 1000);
+    }
+  }
+
+  function finishReading() {
+    stopPlayback(true);
+    triggerGentleSparkles();
+    const btnSpan = document.getElementById('playBtnText');
+    if (btnSpan) btnSpan.innerText = '✨ re-read note ✨';
+    isPlaying = false;
+    if (currentLineIdx >= 0 && lineElementsArray[currentLineIdx]) {
+      const finalCursor = lineElementsArray[currentLineIdx].querySelector('.cursor-blinky');
+      if (finalCursor) finalCursor.remove();
+    }
+  }
+
+  function pressPlay() {
+    if (isPlaying) {
+      // pause and reset
+      if (playTimeout) clearTimeout(playTimeout);
+      isPlaying = false;
+      currentLineIdx = -1;
+      updateHighlightAndProgress();
+      const btnSpan = document.getElementById('playBtnText');
+      if (btnSpan) btnSpan.innerText = 'listen to note';
+      return;
+    }
+    // restart from scratch with fresh delays based on current language & total 27s
+    if (playTimeout) clearTimeout(playTimeout);
+    for (let i = 0; i < lineElementsArray.length; i++) {
+      if (lineElementsArray[i]) {
+        lineElementsArray[i].classList.remove('current', 'past');
+        const curs = lineElementsArray[i].querySelector('.cursor-blinky');
+        if (curs) curs.remove();
+      }
+    }
+    currentLineIdx = -1;
+    updateHighlightAndProgress();
+    
+    // compute delays for current language text lines (ignoring spacers)
+    const textLinesOnly = actualTextLines.filter(l => l !== null);
+    lineDurations = computeLineDelays(textLinesOnly);
+    isPlaying = true;
+    const btnSpan = document.getElementById('playBtnText');
+    if (btnSpan) btnSpan.innerText = '⏸ pause';
+    // start first line
+    playNextLine();
+  }
+
+  function switchLanguage(lang) {
+    if (lang === currentLang) return;
+    // stop any ongoing playback to avoid timing conflicts
+    if (playTimeout) {
+      clearTimeout(playTimeout);
+      playTimeout = null;
+    }
+    isPlaying = false;
+    currentLang = lang;
+    // update active button styles
+    const enBtn = document.getElementById('langEnBtn');
+    const jpBtn = document.getElementById('langJpBtn');
+    if (lang === 'en') {
+      enBtn.classList.add('active');
+      jpBtn.classList.remove('active');
+    } else {
+      jpBtn.classList.add('active');
+      enBtn.classList.remove('active');
+    }
+    renderLetter(); // resets highlights and stops playback
+    const btnSpan = document.getElementById('playBtnText');
+    if (btnSpan) btnSpan.innerText = 'listen to note';
+    updatePetalColorsForLang();
+  }
+
+  // ---------- PETAL FALL SYSTEM ----------
+  const petalCanvas = document.getElementById('petalCanvas');
+  let pCtx = petalCanvas.getContext('2d');
+  let petalsArray = [];
+  let petalColorsScheme = [];
+
+  function getPetalPalette() {
+    if (currentLang === 'jp') {
+      return ['#d9ae6c', '#c18f4a', '#e2bc84', '#b87c3a', '#eccb99', '#aa7942'];
+    } else {
+      return ['#e3a18c', '#c97c63', '#e8b29a', '#bc6f54', '#f0c6af', '#a85e46'];
+    }
+  }
+
+  function updatePetalColorsForLang() {
+    petalColorsScheme = getPetalPalette();
+    for (let p of petalsArray) {
+      p.color = petalColorsScheme[Math.floor(Math.random() * petalColorsScheme.length)];
+    }
+  }
+
+  function resizeCanvas() {
+    petalCanvas.width = window.innerWidth;
+    petalCanvas.height = window.innerHeight;
+  }
+
+  function createPetal(fromTop = true) {
+    const w = petalCanvas.width;
+    const h = petalCanvas.height;
+    const size = 6 + Math.random() * 12;
+    return {
+      x: Math.random() * w,
+      y: fromTop ? -20 - Math.random() * 40 : Math.random() * h,
+      size: size,
+      rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.03,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: 0.5 + Math.random() * 1.2,
+      color: petalColorsScheme[Math.floor(Math.random() * petalColorsScheme.length)],
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: 0.008 + Math.random() * 0.015,
+      swayAmp: 0.6 + Math.random() * 1.2,
+    };
+  }
+
+  function drawPetal(p) {
+    pCtx.save();
+    pCtx.translate(p.x, p.y);
+    pCtx.rotate(p.rot);
+    pCtx.fillStyle = p.color;
+    pCtx.beginPath();
+    pCtx.moveTo(0, -p.size/2);
+    pCtx.quadraticCurveTo(p.size/2.5, -p.size/5, p.size/2, p.size/2);
+    pCtx.quadraticCurveTo(0, p.size/3, -p.size/2, p.size/2);
+    pCtx.quadraticCurveTo(-p.size/2.5, -p.size/5, 0, -p.size/2);
+    pCtx.fill();
+    pCtx.restore();
+  }
+
+  function animatePetals() {
+    if (!pCtx || !petalCanvas) return;
+    pCtx.clearRect(0, 0, petalCanvas.width, petalCanvas.height);
+    for (let i = 0; i < petalsArray.length; i++) {
+      const p = petalsArray[i];
+      p.sway += p.swaySpeed;
+      p.x += p.vx + Math.sin(p.sway) * p.swayAmp * 0.3;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      if (p.y > petalCanvas.height + 40 || p.x < -60 || p.x > petalCanvas.width + 60) {
+        petalsArray[i] = createPetal(true);
+        petalsArray[i].color = petalColorsScheme[Math.floor(Math.random() * petalColorsScheme.length)];
+      } else {
+        drawPetal(p);
+      }
+    }
+    requestAnimationFrame(animatePetals);
+  }
+
+  function initPetals() {
+    petalColorsScheme = getPetalPalette();
+    resizeCanvas();
+    window.addEventListener('resize', () => { resizeCanvas(); });
+    petalsArray = [];
+    for (let i = 0; i < 35; i++) {
+      petalsArray.push(createPetal(i < 20));
+    }
+    animatePetals();
+  }
+
+  // ------------- SPARKLE BURST -------------
+  const sparkleCanvas = document.getElementById('sparkleCanvas');
+  let sparkCtx = null;
+  let activeSparks = [];
+
+  function triggerGentleSparkles() {
+    if (!sparkleCanvas) return;
+    sparkleCanvas.style.display = 'block';
+    sparkleCanvas.width = window.innerWidth;
+    sparkleCanvas.height = window.innerHeight;
+    sparkCtx = sparkleCanvas.getContext('2d');
+    const colorsList = petalColorsScheme.length ? petalColorsScheme : ['#e3a18c', '#c97c63', '#e8b29a'];
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight * 0.6;
+    for (let i = 0; i < 55; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 1.5 + Math.random() * 6;
+      activeSparks.push({
+        x: centerX,
+        y: centerY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 2,
+        life: 0.9 + Math.random() * 0.5,
+        decay: 0.012 + Math.random() * 0.02,
+        radius: 2 + Math.random() * 5,
+        color: colorsList[Math.floor(Math.random() * colorsList.length)],
+      });
+    }
+    animateSparks();
+    setTimeout(() => {
+      if (sparkleCanvas) sparkleCanvas.style.display = 'none';
+      activeSparks = [];
+    }, 1600);
+  }
+
+  function animateSparks() {
+    if (!sparkCtx || !sparkleCanvas) return;
+    sparkCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+    let anyAlive = false;
+    for (let i = 0; i < activeSparks.length; i++) {
+      const s = activeSparks[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vy += 0.12;
+      s.life -= s.decay;
+      if (s.life <= 0) continue;
+      anyAlive = true;
+      sparkCtx.globalAlpha = s.life * 0.75;
+      sparkCtx.fillStyle = s.color;
+      sparkCtx.beginPath();
+      sparkCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+      sparkCtx.fill();
+    }
+    sparkCtx.globalAlpha = 1;
+    if (anyAlive) requestAnimationFrame(animateSparks);
+    else if (sparkleCanvas) sparkleCanvas.style.display = 'none';
+  }
+
+  // init everything
+  window.addEventListener('load', () => {
+    renderLetter();
+    initPetals();
+    document.getElementById('langEnBtn').classList.add('active');
+    document.getElementById('langJpBtn').classList.remove('active');
+    document.getElementById('playMessageBtn').addEventListener('click', pressPlay);
+    document.getElementById('langEnBtn').addEventListener('click', () => switchLanguage('en'));
+    document.getElementById('langJpBtn').addEventListener('click', () => switchLanguage('jp'));
+  });
+</script>
+</body>
+</html>
+```
