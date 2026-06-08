@@ -1,15 +1,74 @@
+Here is an HTML document that creates a personal note with two distinct, muted color schemes and a hidden audio player.
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>👀</title>
+<title>👀 a little note</title>
 <!-- simple, human fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Kalam:wght@300;400;700&family=Short+Stack&display=swap" rel="stylesheet">
 <style>
   /* ------------------------------------------------
-     reset — nothing too polished, feels more personal
+     TWO DISTINCT, MUTED COLOR SCHEMES (not bright)
+     EN: dusty rose / warm terracotta — subdued, earthy
+     JP: deep indigo / faded gold — quiet, ink & paper
   ------------------------------------------------ */
+  
+  /* default / english theme (dusty rose & warm clay) */
+  :root {
+    --bg-page: #f2ebe4;
+    --paper-bg: #fdfaf7;
+    --paper-shadow: rgba(0, 0, 0, 0.06);
+    --text-main: #3f2e26;
+    --text-soft: #8b6f5c;
+    --text-dim: #bea690;
+    --accent-line: #b48b7a;
+    --accent-soft: #d6bcae;
+    --highlight-bg: #f5ede8;
+    --highlight-border: #b4846c;
+    --btn-bg: #f5efe9;
+    --btn-border: #dac2b2;
+    --btn-text: #7a5a48;
+    --progress-track: #e5d5ca;
+    --progress-fill: #b5826a;
+    --signature-color: #b1775e;
+    --header-gradient-start: #b87a60;
+    --header-gradient-end: #c9947a;
+    --subhead-color: #c4a692;
+    --lang-active-bg: #e5d5ca;
+    --lang-active-text: #7a5a48;
+    --lang-hover: #efe3da;
+    --cursor-color: #b8866e;
+  }
+  
+  /* japanese theme (deep indigo, faded gold, quiet) */
+  body.jp-theme {
+    --bg-page: #e8e4dc;
+    --paper-bg: #f6f4ef;
+    --paper-shadow: rgba(0, 0, 0, 0.05);
+    --text-main: #2d2b26;
+    --text-soft: #7e7568;
+    --text-dim: #b7ac9a;
+    --accent-line: #8e8268;
+    --accent-soft: #c9bea8;
+    --highlight-bg: #ece8e0;
+    --highlight-border: #9e8b6e;
+    --btn-bg: #efebe3;
+    --btn-border: #cbbc9e;
+    --btn-text: #6e624c;
+    --progress-track: #dad2c2;
+    --progress-fill: #8f7c60;
+    --signature-color: #9b8a6c;
+    --header-gradient-start: #8b7a60;
+    --header-gradient-end: #aa9778;
+    --subhead-color: #bcae92;
+    --lang-active-bg: #ddd0be;
+    --lang-active-text: #5f5340;
+    --lang-hover: #e6ddcf;
+    --cursor-color: #aa987a;
+  }
+  
   * {
     margin: 0;
     padding: 0;
@@ -17,30 +76,29 @@
   }
 
   body {
-    background: #faf4ed;
-    /* subtle warm gradient that feels like paper under lamplight */
-    background-image: radial-gradient(circle at 10% 20%, rgba(245, 225, 210, 0.4) 2%, transparent 2.5%),
-                      radial-gradient(circle at 85% 40%, rgba(230, 200, 175, 0.3) 1.5%, transparent 2%);
+    background: var(--bg-page);
+    background-image: radial-gradient(circle at 10% 20%, rgba(160, 130, 110, 0.08) 2%, transparent 2.5%),
+                      radial-gradient(circle at 85% 40%, rgba(140, 110, 90, 0.06) 1.5%, transparent 2%);
     background-size: 48px 48px, 32px 32px;
     min-height: 100vh;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     padding: 2rem 1rem 3rem;
-    color: #2c221b;
+    color: var(--text-main);
     line-height: 1.5;
+    transition: background 0.3s ease, color 0.2s ease;
   }
 
   /* main container — feels like an actual letter on a desk */
   .paper {
     max-width: 680px;
     margin: 0 auto;
-    background: #fffef7;
+    background: var(--paper-bg);
     border-radius: 2px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 240, 0.8);
+    box-shadow: 0 8px 24px var(--paper-shadow), 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 240, 0.6);
     position: relative;
-    transition: all 0.2s ease;
+    transition: background 0.3s ease, box-shadow 0.2s;
   }
 
-  /* a bit of "messy" edge — slightly uneven look */
   .paper::before {
     content: '';
     position: absolute;
@@ -49,16 +107,14 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    background: repeating-linear-gradient(transparent, transparent 29px, rgba(210, 180, 140, 0.08) 30px);
+    background: repeating-linear-gradient(transparent, transparent 29px, rgba(150, 120, 100, 0.05) 30px);
   }
 
-  /* inner padding = feels like writing space */
   .letter-inner {
     padding: 2.5rem 2rem 2.2rem;
     position: relative;
   }
 
-  /* hand-written style headers */
   .handwriting {
     font-family: 'Kalam', 'Short Stack', cursive;
     font-weight: 400;
@@ -68,41 +124,43 @@
   .header-note {
     text-align: center;
     margin-bottom: 1.2rem;
-    border-bottom: 1px dashed #e7d9ce;
+    border-bottom: 1px dashed var(--accent-soft);
     padding-bottom: 0.75rem;
+    transition: border-color 0.2s;
   }
 
   .header-note h1 {
     font-family: 'Kalam', cursive;
     font-size: 2.2rem;
     font-weight: 400;
-    color: #b1624b;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #b1624b 0%, #c97b62 80%);
+    background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 80%);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
     display: inline-block;
+    letter-spacing: -0.5px;
   }
 
   .subhead {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 3px;
-    color: #c6aa8f;
+    color: var(--subhead-color);
     margin-top: 6px;
     font-weight: 400;
+    transition: color 0.2s;
   }
 
-  /* language toggle — simple and a bit raw */
+  /* language toggle */
   .lang-choice {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 2rem;
-    border-bottom: 1px solid #f0e2d6;
+    border-bottom: 1px solid var(--accent-soft);
     padding-bottom: 0.8rem;
+    transition: border-color 0.2s;
   }
 
   .lang-btn {
@@ -112,30 +170,28 @@
     font-family: 'Inter', monospace;
     padding: 0.2rem 0.7rem;
     cursor: pointer;
-    color: #ac8e72;
+    color: var(--text-soft);
     font-weight: 450;
     transition: all 0.15s;
     border-radius: 20px;
   }
 
   .lang-btn.active {
-    background: #f0e0d0;
-    color: #8b5a42;
-    box-shadow: inset 0 0 0 1px #e5cfbf;
+    background: var(--lang-active-bg);
+    color: var(--lang-active-text);
+    box-shadow: inset 0 0 0 1px var(--btn-border);
   }
 
   .lang-btn:hover {
-    color: #7b4a32;
-    background: #f7ede5;
+    color: var(--btn-text);
+    background: var(--lang-hover);
   }
 
-  /* letter body — typewriter-ish but not robotic */
   .message-body {
     margin: 1.2rem 0 1.6rem;
     min-height: 280px;
   }
 
-  /* each line of the note */
   .note-line {
     font-family: 'Short Stack', 'Kalam', 'Courier New', monospace;
     font-size: 1.08rem;
@@ -144,16 +200,15 @@
     transition: all 0.2s ease;
     display: inline-block;
     width: 100%;
-    color: #3e2c21;
+    color: var(--text-main);
     padding: 0.2rem 0.3rem;
     border-radius: 12px;
   }
 
-  /* highlighted line (current spoken line) */
   .note-line.current {
-    background-color: #fff0e4;
+    background-color: var(--highlight-bg);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-    border-left: 4px solid #e5a07a;
+    border-left: 4px solid var(--highlight-border);
     padding-left: 0.9rem;
     margin-left: -0.3rem;
     transition: 0.08s linear;
@@ -166,7 +221,7 @@
 
   .note-line-sub {
     font-size: 0.92rem;
-    color: #af8a6e;
+    color: var(--text-soft);
     font-family: 'Inter', monospace;
     letter-spacing: -0.2px;
     font-style: normal;
@@ -181,18 +236,18 @@
     font-family: 'Kalam', cursive;
     font-size: 1.2rem;
     margin-top: 1rem;
-    color: #bc7a5a;
+    color: var(--signature-color);
     text-align: right;
-    border-top: 1px dashed #f0e0d2;
+    border-top: 1px dashed var(--accent-soft);
     padding-top: 1rem;
+    transition: color 0.2s, border-color 0.2s;
   }
 
-  /* typewriter cursor effect */
   .cursor-blinky {
     display: inline-block;
     width: 2px;
     height: 1.2em;
-    background-color: #c68b64;
+    background-color: var(--cursor-color);
     margin-left: 3px;
     vertical-align: middle;
     animation: fadePulse 0.9s step-end infinite;
@@ -204,7 +259,6 @@
     50% { opacity: 0.2; }
   }
 
-  /* play button — feels like a real push button, not overstyled */
   .play-section {
     display: flex;
     justify-content: center;
@@ -212,16 +266,15 @@
   }
 
   .play-note-btn {
-    background: #fcf6f0;
-    border: 1.5px solid #e2cfbe;
+    background: var(--btn-bg);
+    border: 1.5px solid var(--btn-border);
     padding: 0.7rem 2rem;
     font-family: 'Inter', system-ui;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #8c5e44;
+    color: var(--btn-text);
     border-radius: 40px;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
     transition: 0.1s linear;
     display: inline-flex;
     align-items: center;
@@ -229,8 +282,8 @@
   }
 
   .play-note-btn:hover {
-    background: #ffece0;
-    border-color: #dbba9c;
+    background: var(--lang-hover);
+    border-color: var(--highlight-border);
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   }
@@ -239,7 +292,6 @@
     transform: translateY(1px);
   }
 
-  /* progress indicator — super subtle, like a pencil underline */
   .progress-area {
     margin-top: 0.8rem;
     padding: 0 0.2rem;
@@ -247,7 +299,7 @@
 
   .progress-track {
     height: 2px;
-    background: #ecdccf;
+    background: var(--progress-track);
     width: 100%;
     border-radius: 2px;
     overflow: hidden;
@@ -256,20 +308,19 @@
   .progress-fill {
     width: 0%;
     height: 100%;
-    background: #c28662;
+    background: var(--progress-fill);
     transition: width 0.2s linear;
   }
 
-  /* tiny footer */
   .tiny-footer {
     text-align: center;
     font-size: 0.68rem;
-    color: #cfbba8;
+    color: var(--text-dim);
     margin-top: 2rem;
     letter-spacing: 0.7px;
+    transition: color 0.2s;
   }
 
-  /* floating petals — very subtle, not distracting */
   .petal-fall {
     position: fixed;
     top: 0;
@@ -280,7 +331,6 @@
     z-index: 10;
   }
 
-  /* sparkle container for finale */
   .sparkle-burst {
     position: fixed;
     top: 0;
@@ -291,10 +341,9 @@
     z-index: 50;
   }
 
-  /* handmade feel — slight ink bleed effect on text selection */
   ::selection {
-    background: #f7ddcc;
-    color: #5c3a2a;
+    background: var(--accent-soft);
+    color: var(--text-main);
   }
 
   @media (max-width: 500px) {
@@ -307,7 +356,6 @@
     }
   }
   
-  /* hidden audio player container - no visible UI */
   .hidden-audio {
     display: none !important;
     visibility: hidden;
@@ -328,14 +376,12 @@
       <div class="subhead">[I hope u r alive bytha👀]</div>
     </div>
 
-    <!-- language toggle: two simple buttons, no fancy pill -->
     <div class="lang-choice">
       <button class="lang-btn" id="langEnBtn" data-lang="en">english</button>
-      <span style="color:#dccbbc">|</span>
+      <span style="color:var(--text-dim)">|</span>
       <button class="lang-btn" id="langJpBtn" data-lang="jp">日本語</button>
     </div>
 
-    <!-- dynamic message area -->
     <div class="message-body" id="messageContainer"></div>
 
     <div class="play-section">
@@ -359,19 +405,14 @@
   ujichunge bytha😤
 </div>
 
-<!-- canvas elements for gentle falling petals + final sparkles (subtle, not ai-clean) -->
 <canvas id="petalCanvas" class="petal-fall"></canvas>
 <canvas id="sparkleCanvas" class="sparkle-burst" style="display: none;"></canvas>
 
-<!-- HIDDEN AUDIO PLAYER - place your background music here. No visible controls. -->
-<!-- ============================================================= -->
-<!-- ==== 👇👇👇 PUT YOUR AUDIO TAG RIGHT HERE 👇👇👇 ==== -->
-<!-- ==== It will be completely invisible to users but will autoplay when the page loads ==== -->
+<!-- HIDDEN AUDIO PLAYER - background music, invisible -->
 <audio id="bgMusic" loop preload="auto" style="display:none; position:absolute; visibility:hidden; width:0; height:0; opacity:0;">
-    <source src="audioForSite.mp3" type="audio/mpeg">
-    
+  <source src="audioForSite.mp3" type="audio/mpeg">
+  <!-- Replace 'audioForSite.mp3' with your actual music file -->
 </audio>
-<!-- ============================================================= -->
 
 <script>
   // --------------------------------------------------------------
@@ -380,41 +421,34 @@
   const bgAudio = document.getElementById('bgMusic');
   let audioPlayAttempted = false;
   
-  // Function to try playing background audio (respects browser autoplay policies)
   function playBackgroundAudio() {
     if (!bgAudio) return;
-    // If audio has no src, don't do anything
     const hasSource = bgAudio.src && bgAudio.src !== window.location.href && bgAudio.src !== "";
     const hasSourceChild = bgAudio.querySelector('source') && bgAudio.querySelector('source').src && bgAudio.querySelector('source').src !== "";
     if (!hasSource && !hasSourceChild) {
-      console.log("No audio source provided — background music disabled");
+      console.log("No audio source — background music disabled");
       return;
     }
-    bgAudio.volume = 0.35; // gentle background volume
+    bgAudio.volume = 0.3;
     bgAudio.play().then(() => {
       audioPlayAttempted = true;
-    }).catch(e => {
-      console.log("Autoplay blocked — will play on user interaction");
-      // Will retry on first click anywhere
-    });
+    }).catch(e => {});
   }
   
-  // Attempt to play on page load (may be blocked)
   window.addEventListener('load', () => {
     setTimeout(playBackgroundAudio, 500);
   });
   
-  // Also attempt on first user click (any click on document) - ensures music plays
   const playAudioOnInteraction = () => {
     if (!audioPlayAttempted && bgAudio) {
-      bgAudio.play().catch(e => console.log("still blocked?"));
+      bgAudio.play().catch(() => {});
     }
   };
   document.body.addEventListener('click', playAudioOnInteraction);
   document.body.addEventListener('touchstart', playAudioOnInteraction);
   
   // --------------------------------------------------------------
-  // CONTENT — feels real, a bit raw, has personality and voice
+  // CONTENT 
   // --------------------------------------------------------------
   const letterContent = {
     en: [
@@ -462,33 +496,33 @@
   let currentLineIdx = -1;
   let isPlaying = false;
   let playTimeout = null;
-  let lineElementsArray = [];     // html divs for each line (with spacer handling)
-  let actualTextLines = [];       // stores { element, text, style }
+  let lineElementsArray = [];
+  let actualTextLines = [];
   let lineDurations = [];
-  let currentTimerStart = 0;
-  let remainingTimeForCurrentLine = 0;
-  let pausedDuringLangSwitch = false;
 
-  // total reading time exactly 27 seconds for the entire message (both languages)
   const TOTAL_READ_MS = 27000;
 
-  // compute delays based on character count - ensures consistent total time 27s per language
   function computeLineDelays(linesData) {
     if (!linesData || linesData.length === 0) return [];
-    const minTime = 500; // minimum ms per line for readability
+    const minTime = 500;
     let charWeights = linesData.map(line => Math.max(line.text.length, 4));
     let totalChars = charWeights.reduce((a,b) => a+b, 0);
-    // total time budget in ms: TOTAL_READ_MS
     let remainingMs = TOTAL_READ_MS - (minTime * linesData.length);
     if (remainingMs < 0) remainingMs = 0;
-    let delays = charWeights.map(w => {
-      let share = (w / totalChars) * remainingMs;
-      return minTime + share;
-    });
-    return delays;
+    return charWeights.map(w => minTime + (w / totalChars) * remainingMs);
   }
 
-  // render letter based on currentLang, rebuild lines
+  function applyTheme(lang) {
+    const body = document.body;
+    if (lang === 'jp') {
+      body.classList.add('jp-theme');
+    } else {
+      body.classList.remove('jp-theme');
+    }
+    // update petal colors after theme change
+    updatePetalColorsForLang();
+  }
+
   function renderLetter() {
     const container = document.getElementById('messageContainer');
     if (!container) return;
@@ -520,13 +554,7 @@
       actualTextLines.push({ element: lineDiv, text: item.text, style: item.style });
     });
 
-    // if we were playing before language switch, preserve progress timing? 
-    // according to requirement: "if i switch to japanese version mid message the rate of line change should be the same"
-    // But better to reset timeline completely or keep same progress? Let's reset playing state on language switch to avoid timing conflict,
-    // because content lengths differ. However requirement: rate of line change should be same (total 27s each). 
-    // We'll reset playback on language switch to avoid weird state, but total duration remains 27s for both.
     if (isPlaying) {
-      // stop current playback cleanly
       if (playTimeout) clearTimeout(playTimeout);
       isPlaying = false;
       currentLineIdx = -1;
@@ -534,7 +562,6 @@
       const btnSpan = document.getElementById('playBtnText');
       if (btnSpan) btnSpan.innerText = 'listen to note';
     } else {
-      // just reset highlight
       clearHighlightAndProgress();
       currentLineIdx = -1;
       updateHighlightAndProgress();
@@ -556,7 +583,6 @@
   }
 
   function updateHighlightAndProgress() {
-    // remove all current/past + cursors
     for (let i = 0; i < lineElementsArray.length; i++) {
       const el = lineElementsArray[i];
       if (!el) continue;
@@ -564,11 +590,9 @@
       const curs = el.querySelector('.cursor-blinky');
       if (curs) curs.remove();
     }
-    // mark past lines (index < currentLineIdx)
     for (let i = 0; i < currentLineIdx; i++) {
       if (lineElementsArray[i]) lineElementsArray[i].classList.add('past');
     }
-    // mark current line
     if (currentLineIdx >= 0 && currentLineIdx < lineElementsArray.length && lineElementsArray[currentLineIdx]) {
       const curr = lineElementsArray[currentLineIdx];
       curr.classList.add('current');
@@ -578,7 +602,6 @@
       curr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // update progress bar based on total text lines (excluding spacers)
     const totalLines = actualTextLines.filter(l => l !== null).length;
     if (totalLines > 0 && currentLineIdx >= 0 && currentLineIdx < actualTextLines.length) {
       let linesCompleted = actualTextLines.slice(0, currentLineIdx + 1).filter(l => l !== null).length;
@@ -586,8 +609,6 @@
       document.getElementById('progressFill').style.width = percent + '%';
     } else if (currentLineIdx === -1) {
       document.getElementById('progressFill').style.width = '0%';
-    } else if (currentLineIdx >= actualTextLines.length - 1) {
-      document.getElementById('progressFill').style.width = '100%';
     }
   }
 
@@ -612,7 +633,6 @@
       return;
     }
     currentLineIdx++;
-    // find next actual line (skip null spacers)
     while (currentLineIdx < actualTextLines.length && actualTextLines[currentLineIdx] === null) {
       currentLineIdx++;
     }
@@ -621,8 +641,6 @@
       return;
     }
     updateHighlightAndProgress();
-    
-    // get current text index in filtered array
     let newTextIndex = actualTextLines.slice(0, currentLineIdx + 1).filter(l => l !== null).length - 1;
     if (newTextIndex < lineDurations.length) {
       playTimeout = setTimeout(() => {
@@ -647,7 +665,6 @@
 
   function pressPlay() {
     if (isPlaying) {
-      // pause and reset
       if (playTimeout) clearTimeout(playTimeout);
       isPlaying = false;
       currentLineIdx = -1;
@@ -656,7 +673,6 @@
       if (btnSpan) btnSpan.innerText = 'listen to note';
       return;
     }
-    // restart from scratch with fresh delays based on current language & total 27s
     if (playTimeout) clearTimeout(playTimeout);
     for (let i = 0; i < lineElementsArray.length; i++) {
       if (lineElementsArray[i]) {
@@ -667,26 +683,23 @@
     }
     currentLineIdx = -1;
     updateHighlightAndProgress();
-    
-    // compute delays for current language text lines (ignoring spacers)
     const textLinesOnly = actualTextLines.filter(l => l !== null);
     lineDurations = computeLineDelays(textLinesOnly);
     isPlaying = true;
     const btnSpan = document.getElementById('playBtnText');
     if (btnSpan) btnSpan.innerText = '⏸ pause';
-    // start first line
     playNextLine();
   }
 
   function switchLanguage(lang) {
     if (lang === currentLang) return;
-    // stop any ongoing playback to avoid timing conflicts
     if (playTimeout) {
       clearTimeout(playTimeout);
       playTimeout = null;
     }
     isPlaying = false;
     currentLang = lang;
+    
     // update active button styles
     const enBtn = document.getElementById('langEnBtn');
     const jpBtn = document.getElementById('langJpBtn');
@@ -697,13 +710,15 @@
       jpBtn.classList.add('active');
       enBtn.classList.remove('active');
     }
-    renderLetter(); // resets highlights and stops playback
+    
+    applyTheme(lang);
+    renderLetter();
     const btnSpan = document.getElementById('playBtnText');
     if (btnSpan) btnSpan.innerText = 'listen to note';
     updatePetalColorsForLang();
   }
 
-  // ---------- PETAL FALL SYSTEM ----------
+  // ---------- PETAL SYSTEM with muted color palettes ----------
   const petalCanvas = document.getElementById('petalCanvas');
   let pCtx = petalCanvas.getContext('2d');
   let petalsArray = [];
@@ -711,9 +726,11 @@
 
   function getPetalPalette() {
     if (currentLang === 'jp') {
-      return ['#d9ae6c', '#c18f4a', '#e2bc84', '#b87c3a', '#eccb99', '#aa7942'];
+      // deep indigo, faded gold, muted olive, quiet browns — very low saturation
+      return ['#a3947a', '#8f856c', '#b8a88a', '#7e735b', '#9e8e72', '#c0af92', '#8b7c60'];
     } else {
-      return ['#e3a18c', '#c97c63', '#e8b29a', '#bc6f54', '#f0c6af', '#a85e46'];
+      // dusty rose, dried clay, warm taupe, faded brick — gentle earth tones
+      return ['#c2a28e', '#b6907a', '#d0b4a2', '#a67c64', '#c8aa96', '#b58064', '#ccb6a4'];
     }
   }
 
@@ -732,19 +749,19 @@
   function createPetal(fromTop = true) {
     const w = petalCanvas.width;
     const h = petalCanvas.height;
-    const size = 6 + Math.random() * 12;
+    const size = 5 + Math.random() * 11;
     return {
       x: Math.random() * w,
       y: fromTop ? -20 - Math.random() * 40 : Math.random() * h,
       size: size,
       rot: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.03,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: 0.5 + Math.random() * 1.2,
+      rotSpeed: (Math.random() - 0.5) * 0.025,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: 0.4 + Math.random() * 0.9,
       color: petalColorsScheme[Math.floor(Math.random() * petalColorsScheme.length)],
       sway: Math.random() * Math.PI * 2,
-      swaySpeed: 0.008 + Math.random() * 0.015,
-      swayAmp: 0.6 + Math.random() * 1.2,
+      swaySpeed: 0.006 + Math.random() * 0.012,
+      swayAmp: 0.5 + Math.random() * 1,
     };
   }
 
@@ -768,7 +785,7 @@
     for (let i = 0; i < petalsArray.length; i++) {
       const p = petalsArray[i];
       p.sway += p.swaySpeed;
-      p.x += p.vx + Math.sin(p.sway) * p.swayAmp * 0.3;
+      p.x += p.vx + Math.sin(p.sway) * p.swayAmp * 0.25;
       p.y += p.vy;
       p.rot += p.rotSpeed;
       if (p.y > petalCanvas.height + 40 || p.x < -60 || p.x > petalCanvas.width + 60) {
@@ -786,13 +803,13 @@
     resizeCanvas();
     window.addEventListener('resize', () => { resizeCanvas(); });
     petalsArray = [];
-    for (let i = 0; i < 35; i++) {
-      petalsArray.push(createPetal(i < 20));
+    for (let i = 0; i < 32; i++) {
+      petalsArray.push(createPetal(i < 18));
     }
     animatePetals();
   }
 
-  // ------------- SPARKLE BURST -------------
+  // ------------- SPARKLE BURST (muted sparkles) -------------
   const sparkleCanvas = document.getElementById('sparkleCanvas');
   let sparkCtx = null;
   let activeSparks = [];
@@ -803,20 +820,20 @@
     sparkleCanvas.width = window.innerWidth;
     sparkleCanvas.height = window.innerHeight;
     sparkCtx = sparkleCanvas.getContext('2d');
-    const colorsList = petalColorsScheme.length ? petalColorsScheme : ['#e3a18c', '#c97c63', '#e8b29a'];
+    const colorsList = petalColorsScheme.length ? petalColorsScheme : ['#c2a28e', '#b6907a', '#d0b4a2'];
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight * 0.6;
-    for (let i = 0; i < 55; i++) {
+    for (let i = 0; i < 50; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 1.5 + Math.random() * 6;
+      const speed = 1.2 + Math.random() * 5;
       activeSparks.push({
         x: centerX,
         y: centerY,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2,
-        life: 0.9 + Math.random() * 0.5,
-        decay: 0.012 + Math.random() * 0.02,
-        radius: 2 + Math.random() * 5,
+        vy: Math.sin(angle) * speed - 1.8,
+        life: 0.8 + Math.random() * 0.5,
+        decay: 0.01 + Math.random() * 0.018,
+        radius: 2 + Math.random() * 4,
         color: colorsList[Math.floor(Math.random() * colorsList.length)],
       });
     }
@@ -824,7 +841,7 @@
     setTimeout(() => {
       if (sparkleCanvas) sparkleCanvas.style.display = 'none';
       activeSparks = [];
-    }, 1600);
+    }, 1500);
   }
 
   function animateSparks() {
@@ -835,11 +852,11 @@
       const s = activeSparks[i];
       s.x += s.vx;
       s.y += s.vy;
-      s.vy += 0.12;
+      s.vy += 0.1;
       s.life -= s.decay;
       if (s.life <= 0) continue;
       anyAlive = true;
-      sparkCtx.globalAlpha = s.life * 0.75;
+      sparkCtx.globalAlpha = s.life * 0.7;
       sparkCtx.fillStyle = s.color;
       sparkCtx.beginPath();
       sparkCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
@@ -850,10 +867,11 @@
     else if (sparkleCanvas) sparkleCanvas.style.display = 'none';
   }
 
-  // init everything
+  // initialization
   window.addEventListener('load', () => {
     renderLetter();
     initPetals();
+    applyTheme('en');
     document.getElementById('langEnBtn').classList.add('active');
     document.getElementById('langJpBtn').classList.remove('active');
     document.getElementById('playMessageBtn').addEventListener('click', pressPlay);
